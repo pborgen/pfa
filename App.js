@@ -1,30 +1,23 @@
+// PFA - Premier Fitness Alliance Training App
+// Main App Entry Point
+
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
+import AppNavigation from './src/navigation';
+import { theme } from './src/theme';
+import { initializeStorage } from './src/services/storage';
 
 export default function App() {
+  useEffect(() => {
+    // Initialize AsyncStorage on app start
+    initializeStorage();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to PFA</Text>
-      <Text style={styles.subtitle}>Your React Native iOS App</Text>
+    <PaperProvider theme={theme}>
+      <AppNavigation />
       <StatusBar style="auto" />
-    </View>
+    </PaperProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-  },
-});
