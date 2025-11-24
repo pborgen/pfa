@@ -1,0 +1,44 @@
+{
+  "name": "pfa",
+  "version": "1.0.0",
+  "description": "PFA iOS app - React Native with Spec Kit",
+  "main": "expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-google-signin/google-signin": "^16.0.0",
+    "@react-navigation/bottom-tabs": "^7.8.6",
+    "@react-navigation/native": "^7.1.21",
+    "@react-navigation/stack": "^7.6.7",
+    "expo": "~52.0.23",
+    "expo-apple-authentication": "~7.1.3",
+    "expo-av": "~15.0.2",
+    "expo-file-system": "~18.0.12",
+    "expo-image-picker": "~16.0.6",
+    "expo-secure-store": "~14.0.1",
+    "expo-status-bar": "~2.0.0",
+    "expo-video-thumbnails": "~9.0.3",
+    "firebase": "^12.6.0",
+    "react": "18.3.1",
+    "react-hook-form": "^7.66.1",
+    "react-native": "0.76.5",
+    "react-native-paper": "^5.14.5",
+    "react-native-safe-area-context": "^5.6.2",
+    "react-native-screens": "^4.18.0",
+    "react-native-vector-icons": "^10.3.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~18.3.12",
+    "@types/uuid": "^10.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "description": "Claude Code configuration for pfa project",
+  "hooks": {
+    "pre-commit": null,
+    "post-commit": null
+  },
+  "mcp_servers": {}
+}
