@@ -1,17 +1,37 @@
 // PFA - Premier Fitness Alliance Training App
 // Workout List Screen
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FAB, Chip } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 import Card from '../../components/common/Card';
 import { COLORS, SPACING } from '../../constants';
 import { commonStyles, textStyles, categoryColors } from '../../theme';
+import { getWorkouts } from '../../services/storage';
+import { Workout } from '../../types';
 
 const WorkoutListScreen = ({ navigation }: any) => {
-  // TODO: Load workouts from storage
-  const workouts: any[] = [];
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadWorkouts = async () => {
+        setLoading(true);
+        try {
+          const storedWorkouts = await getWorkouts();
+          setWorkouts(storedWorkouts);
+        } catch (error) {
+          console.error('Error loading workouts:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadWorkouts();
+    }, [])
+  );
 
   const renderWorkout = ({ item }: any) => (
     <Card onPress={() => console.log('View workout:', item.id)}>

@@ -1,17 +1,33 @@
 // PFA - Premier Fitness Alliance Training App
 // Client List Screen
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FAB } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 import Card from '../../components/common/Card';
 import { COLORS, SPACING } from '../../constants';
 import { commonStyles, textStyles } from '../../theme';
+import { getClients } from '../../services/storage';
+import { Client } from '../../types';
 
 const ClientListScreen = ({ navigation }: any) => {
-  // TODO: Load clients from storage
-  const clients: any[] = [];
+  const [clients, setClients] = useState<Client[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const loadClients = async () => {
+        try {
+          const storedClients = await getClients();
+          setClients(storedClients);
+        } catch (error) {
+          console.error('Error loading clients:', error);
+        }
+      };
+      loadClients();
+    }, [])
+  );
 
   const renderClient = ({ item }: any) => (
     <Card onPress={() => console.log('View client:', item.id)}>
