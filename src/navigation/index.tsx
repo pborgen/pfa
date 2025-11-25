@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { RootStackParamList, AdminTabParamList, ClientTabParamList } from '../types';
 import { COLORS } from '../constants';
+import { useAuth } from '../context/AuthContext';
 
 // Auth Screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -36,7 +37,6 @@ const ClientTab = createBottomTabNavigator<ClientTabParamList>();
 const AdminTabs = () => {
   return (
     <AdminTab.Navigator
-      id="AdminTabs"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'home';
@@ -89,7 +89,6 @@ const AdminTabs = () => {
 const ClientTabs = () => {
   return (
     <ClientTab.Navigator
-      id="ClientTabs"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'home';
@@ -133,13 +132,11 @@ const ClientTabs = () => {
 // ============================================================================
 
 const RootNavigator = () => {
-  // TODO: Add authentication state management
-  const isAuthenticated = false;
-  const userRole: 'admin' | 'client' = 'admin';
+  const { isAuthenticated, user } = useAuth();
+  const userRole = user?.role || 'admin';
 
   return (
     <Stack.Navigator
-      id="RootStack"
       screenOptions={{
         headerStyle: {
           backgroundColor: COLORS.primary,
@@ -151,14 +148,12 @@ const RootNavigator = () => {
       }}
     >
       {!isAuthenticated ? (
-        // Auth Stack
         <Stack.Screen
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
         />
       ) : userRole === 'admin' ? (
-        // Admin Stack
         <>
           <Stack.Screen
             name="AdminMain"
@@ -182,7 +177,6 @@ const RootNavigator = () => {
           />
         </>
       ) : (
-        // Client Stack
         <>
           <Stack.Screen
             name="ClientMain"

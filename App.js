@@ -7,6 +7,7 @@ import { PaperProvider } from 'react-native-paper';
 import AppNavigation from './src/navigation';
 import { theme } from './src/theme';
 import { initializeStorage } from './src/services/storage';
+import { AuthProvider } from './src/context/AuthContext';
 
 export default function App() {
   useEffect(() => {
@@ -15,9 +16,11 @@ export default function App() {
   }, []);
 
   return (
-    <PaperProvider theme={theme}>
-      <AppNavigation />
-      <StatusBar style="auto" />
-    </PaperProvider>
+    <AuthProvider>
+      <PaperProvider theme={theme}>
+        <AppNavigation />
+        <StatusBar style="auto" />
+      </PaperProvider>
+    </AuthProvider>
   );
 }

@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { v4 as uuidv4 } from 'uuid';
+import * as Crypto from 'expo-crypto';
 import Card from '../../components/common/Card';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
@@ -64,14 +64,14 @@ const WorkoutLogScreen = ({ route, navigation }: any) => {
     setLoading(true);
     try {
       const session: WorkoutSession = {
-        id: uuidv4(),
+        id: Crypto.randomUUID(),
         clientId: 'current-user-id', // TODO: Get from auth context
         workoutId: workout.id,
         startedAt: new Date().toISOString(),
         completedAt: new Date().toISOString(),
         status: 'completed',
         exerciseLogs: Object.entries(setLogs).map(([exerciseId, logs]) => ({
-          id: uuidv4(),
+          id: Crypto.randomUUID(),
           workoutSessionId: '',
           exerciseId,
           sets: logs,

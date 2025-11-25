@@ -2,75 +2,51 @@
 // Login Screen with Google and Apple Sign-In
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import { signInWithGoogle, signInWithApple } from '../../services/firebase';
 import Button from '../../components/common/Button';
 import { COLORS, SPACING, FONT_SIZES, APP_FULL_NAME, MISSION_STATEMENT } from '../../constants';
-
-// Configure Google Sign-In
-GoogleSignin.configure({
-  webClientId: 'YOUR_GOOGLE_WEB_CLIENT_ID', // TODO: Add from Firebase Console
-  offlineAccess: true,
-});
+import { useAuth } from '../../context/AuthContext';
 
 const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { signIn } = useAuth();
 
   const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-
-      // Get the ID token from the user info
-      const tokens = await GoogleSignin.getTokens();
-      if (tokens.idToken) {
-        const user = await signInWithGoogle(tokens.idToken);
-        console.log('Signed in with Google:', user.email);
-        // Navigation will be handled by auth state change
-      }
-    } catch (err: any) {
-      console.error('Google Sign-In Error:', err);
-      setError('Failed to sign in with Google. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    // Note: Google Sign-In requires a development build, not Expo Go
+    // For now, show a message explaining this
+    Alert.alert(
+      'Development Build Required',
+      'Google Sign-In requires a development build. In Expo Go, this feature is not available.\n\nTo test authentication:\n1. Run: eas build --profile development --platform ios\n2. Install the development build\n3. Then sign-in will work',
+      [{ text: 'OK' }]
+    );
   };
 
   const handleAppleSignIn = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    // Note: Apple Sign-In requires a development build, not Expo Go
+    Alert.alert(
+      'Development Build Required',
+      'Apple Sign-In requires a development build. In Expo Go, this feature is not available.\n\nTo test authentication:\n1. Run: eas build --profile development --platform ios\n2. Install the development build\n3. Then sign-in will work',
+      [{ text: 'OK' }]
+    );
+  };
 
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
-
-      if (credential.identityToken) {
-        const user = await signInWithApple(
-          credential.identityToken,
-          credential.authorizationCode
-        );
-        console.log('Signed in with Apple:', user.email);
-        // Navigation will be handled by auth state change
-      }
-    } catch (err: any) {
-      if (err.code !== 'ERR_CANCELED') {
-        console.error('Apple Sign-In Error:', err);
-        setError('Failed to sign in with Apple. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
+  // Temporary: Skip login for development/testing
+  const handleSkipLogin = () => {
+    Alert.alert(
+      'Development Mode',
+      'This will simulate logging in as an admin user for testing purposes.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Continue as Admin',
+          onPress: () => {
+            signIn('admin');
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -91,7 +67,6 @@ const LoginScreen = () => {
             variant="primary"
             fullWidth
             loading={loading}
-            icon="google"
           />
 
           {Platform.OS === 'ios' && (
@@ -101,8 +76,20 @@ const LoginScreen = () => {
               variant="outlined"
               fullWidth
               loading={loading}
-              icon="apple"
             />
+          )}
+
+          {/* Dev mode - skip login */}
+          {__DEV__ && (
+            <View style={styles.devSection}>
+              <Text style={styles.devText}>Development Mode</Text>
+              <Button
+                title="Skip Login (Dev Only)"
+                onPress={handleSkipLogin}
+                variant="text"
+                fullWidth
+              />
+            </View>
           )}
 
           {error && (
@@ -162,6 +149,18 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     marginBottom: SPACING.xl,
+  },
+  devSection: {
+    marginTop: SPACING.lg,
+    paddingTop: SPACING.md,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.lightGray,
+    alignItems: 'center',
+  },
+  devText: {
+    fontSize: FONT_SIZES.small,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xs,
   },
   errorContainer: {
     backgroundColor: '#FFEBEE',

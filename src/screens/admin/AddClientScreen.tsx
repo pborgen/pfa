@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { v4 as uuidv4 } from 'uuid';
+import * as Crypto from 'expo-crypto';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { saveClient } from '../../services/storage';
@@ -45,7 +45,7 @@ const AddClientScreen = ({ navigation }: any) => {
     setLoading(true);
     try {
       const newClient: Client = {
-        id: uuidv4(),
+        id: Crypto.randomUUID(),
         name,
         email,
         phone: phone || undefined,
@@ -92,7 +92,7 @@ const AddClientScreen = ({ navigation }: any) => {
             onChangeText={setName}
             placeholder="Jane Smith"
             error={errors.name}
-            leftIcon="person"
+            leftIcon="account"
           />
 
           <Input
@@ -103,7 +103,7 @@ const AddClientScreen = ({ navigation }: any) => {
             keyboardType="email-address"
             autoCapitalize="none"
             error={errors.email}
-            leftIcon="mail"
+            leftIcon="email"
           />
 
           <Input
@@ -113,7 +113,7 @@ const AddClientScreen = ({ navigation }: any) => {
             placeholder="(555) 123-4567"
             keyboardType="phone-pad"
             error={errors.phone}
-            leftIcon="call"
+            leftIcon="phone"
           />
 
           <Input
@@ -123,7 +123,7 @@ const AddClientScreen = ({ navigation }: any) => {
             placeholder="Training goals, preferences, etc."
             multiline
             numberOfLines={4}
-            leftIcon="create"
+            leftIcon="note-text"
           />
 
           <Button

@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { v4 as uuidv4 } from 'uuid';
+import * as Crypto from 'expo-crypto';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import { saveWorkout } from '../../services/storage';
@@ -36,7 +36,7 @@ const WorkoutBuilderScreen = ({ navigation }: any) => {
     setLoading(true);
     try {
       const newWorkout: Workout = {
-        id: uuidv4(),
+        id: Crypto.randomUUID(),
         name,
         description: description || undefined,
         category,
@@ -75,7 +75,7 @@ const WorkoutBuilderScreen = ({ navigation }: any) => {
             onChangeText={setName}
             placeholder="Speed & Agility Circuit"
             error={errors.name}
-            leftIcon="fitness"
+            leftIcon="dumbbell"
           />
 
           <Input
@@ -85,7 +85,7 @@ const WorkoutBuilderScreen = ({ navigation }: any) => {
             placeholder="Focus on explosive movements and quick direction changes"
             multiline
             numberOfLines={3}
-            leftIcon="create"
+            leftIcon="text"
           />
 
           {/* TODO: Add category picker */}
