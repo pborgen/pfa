@@ -20,11 +20,16 @@ import ClientListScreen from '../screens/admin/ClientListScreen';
 import AddClientScreen from '../screens/admin/AddClientScreen';
 import WorkoutBuilderScreen from '../screens/admin/WorkoutBuilderScreen';
 import WorkoutListScreen from '../screens/admin/WorkoutListScreen';
+import AssignWorkoutScreen from '../screens/admin/AssignWorkoutScreen';
+import AthleteDetailScreen from '../screens/admin/AthleteDetailScreen';
 
 // Client Screens
 import ClientHomeScreen from '../screens/client/ClientHomeScreen';
 import WorkoutLogScreen from '../screens/client/WorkoutLogScreen';
 import ProgressScreen from '../screens/client/ProgressScreen';
+
+// Common Screens
+import MoreScreen from '../screens/common/MoreScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const AdminTab = createBottomTabNavigator<AdminTabParamList>();
@@ -47,6 +52,8 @@ const AdminTabs = () => {
             iconName = focused ? 'people' : 'people-outline';
           } else if (route.name === 'WorkoutList') {
             iconName = focused ? 'fitness' : 'fitness-outline';
+          } else if (route.name === 'AdminMore') {
+            iconName = focused ? 'menu' : 'menu-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -78,6 +85,11 @@ const AdminTabs = () => {
         component={WorkoutListScreen}
         options={{ title: 'Workouts' }}
       />
+      <AdminTab.Screen
+        name="AdminMore"
+        component={MoreScreen}
+        options={{ title: 'More' }}
+      />
     </AdminTab.Navigator>
   );
 };
@@ -97,6 +109,8 @@ const ClientTabs = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Progress') {
             iconName = focused ? 'stats-chart' : 'stats-chart-outline';
+          } else if (route.name === 'ClientMore') {
+            iconName = focused ? 'menu' : 'menu-outline';
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -122,6 +136,11 @@ const ClientTabs = () => {
         name="Progress"
         component={ProgressScreen}
         options={{ title: 'Progress' }}
+      />
+      <ClientTab.Screen
+        name="ClientMore"
+        component={MoreScreen}
+        options={{ title: 'More' }}
       />
     </ClientTab.Navigator>
   );
@@ -174,6 +193,16 @@ const RootNavigator = () => {
             name="WorkoutLog"
             component={WorkoutLogScreen}
             options={{ title: 'Log Workout' }}
+          />
+          <Stack.Screen
+            name="AssignWorkout"
+            component={AssignWorkoutScreen}
+            options={{ title: 'Assign Workout' }}
+          />
+          <Stack.Screen
+            name="AthleteDetail"
+            component={AthleteDetailScreen}
+            options={{ title: 'Athlete Details' }}
           />
         </>
       ) : (

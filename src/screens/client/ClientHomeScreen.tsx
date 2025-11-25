@@ -2,15 +2,17 @@
 // Client Home Screen - Athlete's Workout List
 
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Chip } from 'react-native-paper';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 import { COLORS, SPACING } from '../../constants';
 import { commonStyles, textStyles, categoryColors } from '../../theme';
+import { useAuth } from '../../context/AuthContext';
 
 const ClientHomeScreen = ({ navigation }: any) => {
+  const { signOut, user } = useAuth();
   // TODO: Load assigned workouts from storage
   const assignments: any[] = [];
 
@@ -61,6 +63,25 @@ const ClientHomeScreen = ({ navigation }: any) => {
             <Text style={textStyles.caption}>
               Your coach will assign workouts for you to complete
             </Text>
+            <View style={styles.logoutSection}>
+              <Text style={textStyles.caption}>
+                Logged in as {user?.displayName || 'Client'}
+              </Text>
+              <Button
+                title="Log Out"
+                onPress={() => {
+                  Alert.alert(
+                    'Log Out',
+                    'Are you sure you want to log out?',
+                    [
+                      { text: 'Cancel', style: 'cancel' },
+                      { text: 'Log Out', style: 'destructive', onPress: signOut }
+                    ]
+                  );
+                }}
+                variant="text"
+              />
+            </View>
           </View>
         ) : (
           <FlatList
@@ -100,6 +121,10 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 12,
     color: COLORS.textLight,
+  },
+  logoutSection: {
+    marginTop: SPACING.xxl,
+    alignItems: 'center',
   },
 });
 

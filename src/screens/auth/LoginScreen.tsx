@@ -33,16 +33,17 @@ const LoginScreen = () => {
   };
 
   // Temporary: Skip login for development/testing
-  const handleSkipLogin = () => {
+  const handleDevLogin = (role: 'admin' | 'client') => {
+    const roleLabel = role === 'admin' ? 'Admin' : 'Client';
     Alert.alert(
       'Development Mode',
-      'This will simulate logging in as an admin user for testing purposes.',
+      `This will simulate logging in as a ${roleLabel.toLowerCase()} user for testing purposes.`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Continue as Admin',
+          text: `Continue as ${roleLabel}`,
           onPress: () => {
-            signIn('admin');
+            signIn(role);
           }
         }
       ]
@@ -84,8 +85,14 @@ const LoginScreen = () => {
             <View style={styles.devSection}>
               <Text style={styles.devText}>Development Mode</Text>
               <Button
-                title="Skip Login (Dev Only)"
-                onPress={handleSkipLogin}
+                title="Continue as Admin"
+                onPress={() => handleDevLogin('admin')}
+                variant="text"
+                fullWidth
+              />
+              <Button
+                title="Continue as Client"
+                onPress={() => handleDevLogin('client')}
                 variant="text"
                 fullWidth
               />

@@ -2,9 +2,10 @@
 // Workout List Screen
 
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FAB, Chip } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import Card from '../../components/common/Card';
 import { COLORS, SPACING } from '../../constants';
@@ -52,9 +53,18 @@ const WorkoutListScreen = ({ navigation }: any) => {
           {item.description}
         </Text>
       )}
-      <Text style={textStyles.caption}>
-        {item.exercises?.length || 0} exercises
-      </Text>
+      <View style={styles.workoutFooter}>
+        <Text style={textStyles.caption}>
+          {item.exercises?.length || 0} exercises
+        </Text>
+        <TouchableOpacity
+          style={styles.assignButton}
+          onPress={() => navigation.navigate('AssignWorkout', { workoutId: item.id })}
+        >
+          <Ionicons name="person-add-outline" size={16} color={COLORS.athleticBlue} />
+          <Text style={styles.assignButtonText}>Assign</Text>
+        </TouchableOpacity>
+      </View>
     </Card>
   );
 
@@ -100,11 +110,32 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.xs,
   },
   categoryChip: {
-    height: 24,
+    height: 28,
   },
   chipText: {
     fontSize: 12,
     color: COLORS.textLight,
+    lineHeight: 14,
+  },
+  workoutFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: SPACING.sm,
+  },
+  assignButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: 4,
+    backgroundColor: COLORS.lightGray,
+  },
+  assignButtonText: {
+    fontSize: 14,
+    color: COLORS.athleticBlue,
+    marginLeft: 4,
+    fontWeight: '500',
   },
   fab: {
     position: 'absolute',

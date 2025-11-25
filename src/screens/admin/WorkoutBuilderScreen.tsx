@@ -1,23 +1,47 @@
 // PFA - Premier Fitness Alliance Training App
 // Workout Builder Screen
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Crypto from 'expo-crypto';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
-import { saveWorkout } from '../../services/storage';
+import { saveWorkout, getWorkoutById } from '../../services/storage';
 import { Workout, WorkoutCategory } from '../../types';
 import { SPACING, WORKOUT_CATEGORIES, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../../constants';
 import { commonStyles, textStyles } from '../../theme';
 
-const WorkoutBuilderScreen = ({ navigation }: any) => {
+const WorkoutBuilderScreen = ({ navigation, route }: any) => {
+  const workoutId = route.params?.workoutId;
+  const isEditing = !!workoutId;
+
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<WorkoutCategory>('strength');
+  const [existingWorkout, setExistingWorkout] = useState<Workout | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (workoutId) {
+      loadWorkout();
+    }
+  }, [workoutId]);
+
+  const loadWorkout = async () => {
+    try {
+      const workout = await getWorkoutById(workoutId);
+      if (workout) {
+        setExistingWorkout(workout);
+        setName(workout.name);
+        setDescription(workout.description || '');
+        setCategory(workout.category);
+      }
+    } catch (error) {
+      console.error('Error loading workout:', error);
+    }
+  };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -35,26 +59,34 @@ const WorkoutBuilderScreen = ({ navigation }: any) => {
 
     setLoading(true);
     try {
-      const newWorkout: Workout = {
-        id: Crypto.randomUUID(),
-        name,
-        description: description || undefined,
-        category,
-        exercises: [], // TODO: Add exercise builder
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      const workoutData: Workout = isEditing && existingWorkout
+        ? {
+            ...existingWorkout,
+            name,
+            description: description || undefined,
+            category,
+            updatedAt: new Date().toISOString(),
+          }
+        : {
+            id: Crypto.randomUUID(),
+            name,
+            description: description || undefined,
+            category,
+            exercises: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
 
-      await saveWorkout(newWorkout);
+      await saveWorkout(workoutData);
 
       Alert.alert(
         'Success',
-        SUCCESS_MESSAGES.workout.created,
+        isEditing ? SUCCESS_MESSAGES.workout.updated : SUCCESS_MESSAGES.workout.created,
         [{ text: 'OK', onPress: () => navigation.goBack() }]
       );
     } catch (error) {
       console.error('Error saving workout:', error);
-      Alert.alert('Error', ERROR_MESSAGES.workout.createFailed);
+      Alert.alert('Error', isEditing ? ERROR_MESSAGES.workout.updateFailed : ERROR_MESSAGES.workout.createFailed);
     } finally {
       setLoading(false);
     }
@@ -63,9 +95,9 @@ const WorkoutBuilderScreen = ({ navigation }: any) => {
   return (
     <SafeAreaView style={commonStyles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={textStyles.h2}>Create Workout</Text>
+        <Text style={textStyles.h2}>{isEditing ? 'Edit Workout' : 'Create Workout'}</Text>
         <Text style={textStyles.bodySecondary}>
-          Build a customized workout for your athletes
+          {isEditing ? 'Update this workout' : 'Build a customized workout for your athletes'}
         </Text>
 
         <View style={styles.form}>
@@ -101,7 +133,7 @@ const WorkoutBuilderScreen = ({ navigation }: any) => {
           </View>
 
           <Button
-            title="Save Workout"
+            title={isEditing ? 'Update Workout' : 'Save Workout'}
             onPress={handleSave}
             variant="primary"
             fullWidth

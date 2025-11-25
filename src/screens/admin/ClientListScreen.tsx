@@ -29,8 +29,8 @@ const ClientListScreen = ({ navigation }: any) => {
     }, [])
   );
 
-  const renderClient = ({ item }: any) => (
-    <Card onPress={() => console.log('View client:', item.id)}>
+  const renderClient = ({ item }: { item: Client }) => (
+    <Card onPress={() => navigation.navigate('AthleteDetail', { clientId: item.id })}>
       <Text style={textStyles.h3}>{item.name}</Text>
       <Text style={textStyles.bodySecondary}>{item.email}</Text>
     </Card>

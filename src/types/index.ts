@@ -30,6 +30,7 @@ export interface Client {
   email: string; // Required for sending invitation
   phone?: string;
   notes?: string;
+  photoUri?: string; // Local image URI for athlete photo
   active?: boolean;
   invitationSent?: boolean;
   invitationSentAt?: string;
@@ -186,6 +187,8 @@ export type RootStackParamList = {
   AddClient: undefined;
   WorkoutBuilder: undefined;
   WorkoutLog: { workoutId: string };
+  AssignWorkout: { workoutId: string };
+  AthleteDetail: { clientId: string };
 };
 
 export type AuthStackParamList = {
@@ -197,11 +200,13 @@ export type AdminTabParamList = {
   AdminHome: undefined;
   ClientList: undefined;
   WorkoutList: undefined;
+  AdminMore: undefined;
 };
 
 export type ClientTabParamList = {
   ClientHome: undefined;
   Progress: undefined;
+  ClientMore: undefined;
 };
 
 export type AthletesStackParamList = {
